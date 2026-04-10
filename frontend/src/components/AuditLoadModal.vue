@@ -148,7 +148,6 @@
                   v-if="isPdfBol"
                   :src="bolFrameSrc"
                   class="bol-frame"
-                  :style="bolZoomStyle"
                   title="BOL PDF"
               />
 
@@ -157,7 +156,7 @@
                   :src="bol.url"
                   alt="BOL"
                   class="bol-image"
-                  :style="bolZoomStyle"
+                  :style="bolImageStyle"
               />
             </div>
           </div>
@@ -254,23 +253,21 @@ const isPdfBol = computed(() => {
   return bol.value?.type === 'pdf'
 })
 
+const zoomPercent = computed(() => Math.round(zoomLevel.value * 100))
+
 const bolFrameSrc = computed(() => {
   if (!bol.value?.url) return ''
   if (isPdfBol.value) {
-    return `${bol.value.url}#toolbar=0&navpanes=0&scrollbar=1`
+    return `${bol.value.url}#toolbar=0&navpanes=0&scrollbar=1&zoom=${zoomPercent.value}`
   }
   return bol.value.url
 })
 
-const zoomPercent = computed(() => Math.round(zoomLevel.value * 100))
-
-const bolZoomStyle = computed(() => {
-  const scale = zoomLevel.value
+const bolImageStyle = computed(() => {
   return {
-    transform: `scale(${scale})`,
-    transformOrigin: 'top left',
-    width: `${100 / scale}%`,
-    height: `${100 / scale}%`,
+    width: `${zoomPercent.value}%`,
+    maxWidth: 'none',
+    height: 'auto',
   }
 })
 
